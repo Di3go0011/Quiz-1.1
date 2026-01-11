@@ -398,35 +398,40 @@ def create_problem_page():
     back_button.pack(pady=10)
 
 def send_problem(problem_text):
-    if problem_text.strip():
-        try:
-            # Configurações do e-mail
-            sender_email = "inglesfluentemente011@gmail.com"
-            sender_password = "jfaj eldo ljix fbam"  # Substitua pela senha do e-mail
-            recipient_email = "diegobigode1010@gmail.com"  # Substitua pelo e-mail do destinatário
-
-            # Configurar a mensagem
-            message = MIMEMultipart()
-            message["From"] = sender_email
-            message["To"] = recipient_email
-            message["Subject"] = "Relato de Problema - Quiz App"
-            
-            # Corpo do e-mail
-            message.attach(MIMEText(f"Relato enviado:\n\n{problem_text}", "plain"))
-
-            # Enviar e-mail
-            with smtplib.SMTP("smtp.gmail.com", 587) as server:  # Use o servidor SMTP do seu provedor
-                server.starttls()
-                server.login(sender_email, sender_password)
-                server.sendmail(sender_email, recipient_email, message.as_string())
-
-            # Exibir mensagem de sucesso
-            messagebox.showinfo("Sucesso", "Problema enviado com sucesso!")
-        except Exception as e:
-            # Exibir erro, caso ocorra
-            messagebox.showerror("Erro", f"Não foi possível enviar o problema.\nErro: {str(e)}")
-    else:
+    if not problem_text.strip():
         messagebox.showwarning("Aviso", "Por favor, escreva o problema antes de enviar.")
+        return
+
+    try:
+        sender_email = "disciplinedrive07@gmail.com"
+        sender_password = "xfqxezvyhozpnmvn"  # sem espaços
+        recipient_email = "diegobigode1010@gmail.com"
+
+        message = MIMEMultipart()
+        message["From"] = sender_email
+        message["To"] = recipient_email
+        message["Subject"] = "Relato de Problema - Quiz App"
+
+        message.attach(MIMEText(problem_text, "plain", "utf-8"))
+
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, sender_password)
+            server.send_message(message)
+
+        messagebox.showinfo("Sucesso", "Problema enviado com sucesso!")
+
+    except smtplib.SMTPAuthenticationError:
+        messagebox.showerror(
+            "Erro",
+            "Falha de autenticação.\n\n"
+            "Verifique se:\n"
+            "- A senha é uma SENHA DE APP\n"
+            "- A verificação em duas etapas está ativa\n"
+            "- O e-mail está correto"
+        )
+
+    except Exception as e:
+        messagebox.showerror("Erro", f"Erro ao enviar e-mail:\n{e}")
 
 # Função para criar página do tutorial
 tutorial_images = ["img/123.png", "img/456.png", "img/789.png", "img/101112.png"]
